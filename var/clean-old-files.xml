@@ -1,0 +1,38 @@
+<project name="clean-old-files" default="clean">
+	<target name="clean" description="Cleans old files (>20 days) from download directory, does not recurse.">
+		<echo>Base path: ${basepath}</echo>
+		<antcall target="print-instructions" />
+		<antcall target="doclean" />
+	</target>
+
+	<target name="print-instructions" unless="basepath">
+		<echo>Call with a basepath property, like this:</echo>
+		<echo>    ant -f clean-old-files.xml -Dbasepath="c:/Documents and Settings/you/My Documents/Downloads"</echo>
+	</target>
+
+	<target name="doclean" if="basepath">
+		<echo>Running cleanup on... ${basepath}</echo>
+		<tstamp>
+			<format property="tstamp_old" pattern="yyyy-MM-dd HH:mm" offset="-20" unit="day" />
+		</tstamp>
+		<echo>${tstamp_old}</echo>
+
+		<path id="path_old">
+			<fileset dir="${basepath}/" id="fs_old">
+				<include name="*" />
+				<exclude name="CLEANUP/**" />
+				<exclude name="**/Thumbs.db" />
+				<!-- subdirectories -->
+				<exclude name="*/*" />
+				<date when="before" datetime="${tstamp_old}" pattern="yyyy-MM-dd HH:mm" />
+			</fileset>
+		</path>
+
+		<property name="temppath" refid="path_old" />
+		<echo>Fileset is: ${temppath}</echo>
+		<mkdir dir="${basepath}/CLEANUP" />
+		<move todir="${basepath}/CLEANUP">
+			<path refid="path_old" />
+		</move>
+	</target>
+</project>
