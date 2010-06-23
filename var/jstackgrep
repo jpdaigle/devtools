@@ -1,0 +1,21 @@
+#!/bin/bash
+# Author: jpdaigle@gmail.com
+# Use jps to find java processes, grep for given argument and then jstack that PID
+
+if [[ $1 == "" ]]
+then
+	echo Usage: `basename $0` \"main class to grep\" [jstack args]
+	exit 1
+fi
+
+PMATCH=`jps | grep -i $1`
+
+# test for exactly 1 line of output with a PID
+if [[ $(echo $PMATCH | egrep "[0-9]+" | wc -l) -ne 1 ]]
+then
+	echo "Err: must match exactly one process."
+	exit 1
+fi
+echo PID FOUND: $PMATCH
+MYPID=$(echo $PMATCH | awk '{print $1}')
+jstack $2 $3 $4 $5 $MYPID 
