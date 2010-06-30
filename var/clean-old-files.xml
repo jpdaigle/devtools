@@ -15,7 +15,12 @@
 		<tstamp>
 			<format property="tstamp_old" pattern="yyyy-MM-dd HH:mm" offset="-20" unit="day" />
 		</tstamp>
-		<echo>${tstamp_old}</echo>
+		<tstamp>
+			<format property="tstamp_now" pattern="yyyy-MM-dd HH:mm" />
+		</tstamp>
+
+		<echo>Time is currently... ${tstamp_now}</echo>
+		<echo>Cleaning up (moving) files older than... '${tstamp_old}' to 'CLEANUP' dir.</echo>
 
 		<path id="path_old">
 			<fileset dir="${basepath}/" id="fs_old">
